@@ -3,8 +3,9 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 //import './index.css';
-const API_KEY = "e0c10af9"; //API key for OMDB, limit of 1K requests per day. 
+const API_KEY = "e0c10af9"; //API key for OMDB, limit of 1K requests per day. To get another one, visit  http://www.omdbapi.com/apikey.aspx
 var rowCount = 0; 
+
 class App extends Component {
   //state = {movies:[], currentMovie:""}
   constructor(props) {
@@ -17,14 +18,11 @@ class App extends Component {
   }
   handleChange(event) {
     this.setState({currentMovie: event.target.value})
-    //console.log(event.target.value);
   }
   handleSubmit = async event => {
-    //this.setState({currentMovie:event.title})
     event.preventDefault();
     console.log(this.state.currentMovie);
     const newMovieData = await this.getMovieData(this.state.currentMovie);
-
     console.log(newMovieData)
   }
   addRow(rowVals) {
@@ -33,7 +31,6 @@ class App extends Component {
       return {rows:[...prev.rows, rowVals]};
     })
   }
-
   getMovieData(title) {
     let movieDataRequest = 'http://www.omdbapi.com/?t=' + title+ '&apikey='+API_KEY;
     let movieData = fetch(movieDataRequest)
@@ -59,11 +56,11 @@ class App extends Component {
   deleteRow(rowNum) {
     console.log("Entering Delete Method");
     var rows = [...this.state.rows];
-    const location = rows.findIndex(film=>film.id == rowNum);
+    const location = rows.findIndex(film=>film.id === rowNum);
     console.log("location IS : ")
     console.log(location);
 
-    if(location == -1) {
+    if(location === -1) {
       return;
     }
     var deleted= rows.splice(location, 1);
@@ -77,10 +74,10 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-
-        <div id="header-container">
+        <div class="header-container">
           <header>
             <h1>My Movie List</h1>
+            <a href="http://www.omdbapi.com/" id="apiLink">Powered by the OMDB API</a>
           </header>
         </div>
 
@@ -130,18 +127,3 @@ class App extends Component {
 }
 
 export default App;
-/*
-<MaterialTable
-            title= "My Saved Movies"
-            columns = {[
-              {title: 'Title', field: 'title'},
-              {title: 'Release Year', field: 'year'},
-              {title: 'Runtime',field: 'runtime'},
-              {tile: 'Director', field: 'director'},
-              {title: 'Metascore', field:"metascore"},
-              {title: 'IMDb Rating', field:'imdb'}
-            ]}
-            data={this.state.movies}
-            />
-
-*/
