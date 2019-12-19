@@ -7,7 +7,6 @@ const API_KEY = "e0c10af9"; //API key for OMDB, limit of 1K requests per day. To
 var rowCount = 0; 
 
 class App extends Component {
-  //state = {movies:[], currentMovie:""}
   constructor(props) {
     super(props);
     this.state = {currentMovie:'',
@@ -16,21 +15,25 @@ class App extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
   handleChange(event) {
     this.setState({currentMovie: event.target.value})
   }
+
   handleSubmit = async event => {
     event.preventDefault();
     console.log(this.state.currentMovie);
     const newMovieData = await this.getMovieData(this.state.currentMovie);
     console.log(newMovieData)
   }
+
   addRow(rowVals) {
     this.setState((prev, props) => {
       rowCount+=1;
       return {rows:[...prev.rows, rowVals]};
     })
   }
+
   getMovieData(title) {
     let movieDataRequest = 'http://www.omdbapi.com/?t=' + title+ '&apikey='+API_KEY;
     let movieData = fetch(movieDataRequest)
@@ -53,28 +56,27 @@ class App extends Component {
     console.log("The movie data itself, will be an unfulfilled promise:")
     console.log(movieData);
   }
+
   deleteRow(rowNum) {
     console.log("Entering Delete Method");
     var rows = [...this.state.rows];
     const location = rows.findIndex(film=>film.id === rowNum);
     console.log("location IS : ")
     console.log(location);
-
     if(location === -1) {
       return;
     }
     var deleted= rows.splice(location, 1);
     console.log("DELETED ROW WITH: ")
     console.log(deleted)
-    if(!deleted){
-      rowCount-=1;
-    }
+    rowCount-=1;
     this.setState({rows})
   }
+
   render() {
     return (
       <div className="App">
-        <div class="header-container">
+        <div className="header-container">
           <header>
             <h1>My Movie List</h1>
             <a href="http://www.omdbapi.com/" id="apiLink">Powered by the OMDB API</a>
@@ -103,7 +105,7 @@ class App extends Component {
             </thead>
             <tbody>
               {this.state.rows.map(row=> (
-                <tr id = {row.id}>
+                <tr key={row.id} id = {row.id}>
                   <td>{row.title}</td>
                   <td>{row.year}</td>
                   <td>{row.director}</td>
