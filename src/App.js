@@ -7,6 +7,7 @@ const API_KEY = "e0c10af9"; //API key for OMDB, limit of 1K requests per day. To
 var rowCount = 0; 
 
 class App extends Component {
+  //Set up relevant state variables
   constructor(props) {
     super(props);
     this.state = {currentMovie:'',
@@ -20,6 +21,7 @@ class App extends Component {
     this.setState({currentMovie: event.target.value})
   }
 
+  //find current movie being searched and make async call to getMoviedata
   handleSubmit = async event => {
     event.preventDefault();
     console.log(this.state.currentMovie);
@@ -34,6 +36,7 @@ class App extends Component {
     })
   }
 
+  //make GET request to omdb api to get movie based on title
   getMovieData(title) {
     let movieDataRequest = 'http://www.omdbapi.com/?t=' + title+ '&apikey='+API_KEY;
     let movieData = fetch(movieDataRequest)
@@ -57,10 +60,11 @@ class App extends Component {
     console.log(movieData);
   }
 
-  deleteRow(rowNum) {
+  //remove row based on rowID
+  deleteRow(rowID) {
     console.log("Entering Delete Method");
     var rows = [...this.state.rows];
-    const location = rows.findIndex(film=>film.id === rowNum);
+    const location = rows.findIndex(film=>film.id === rowID);
     console.log("location IS : ")
     console.log(location);
     if(location === -1) {
