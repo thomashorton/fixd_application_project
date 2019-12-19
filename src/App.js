@@ -4,7 +4,6 @@ import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 //import './index.css';
 const API_KEY = "e0c10af9"; //API key for OMDB, limit of 1K requests per day. To get another one, visit  http://www.omdbapi.com/apikey.aspx
-var rowCount = 0; 
 
 class App extends Component {
   //Set up relevant state variables
@@ -29,24 +28,28 @@ class App extends Component {
     console.log(newMovieData)
   }
 
-  addRow(rowVals) {
+  //add a row with the information received from the API
+  addRow(newRow) {
     this.setState((prev, props) => {
-      rowCount+=1;
-      return {rows:[...prev.rows, rowVals]};
+      return {rows:[...prev.rows, newRow]};
     })
   }
 
   //make GET request to omdb api to get movie based on title
   getMovieData(title) {
+    //construct GET request
     let movieDataRequest = 'http://www.omdbapi.com/?t=' + title+ '&apikey='+API_KEY;
     let movieData = fetch(movieDataRequest)
       .then(res => res.json())
       .then((data)=> {
         this.setState({currentMovieData: data})
-        let movieJSON = {title: data.Title, year: data.Year, runtime:data.Runtime, metascore: data.Metascore, imdb: data.imdbRating, director: data.Director, id: rowCount}
-        console.log("DATA: ");
+        //Strip out useful information about the movie
+        let movieJSON = {title: data.Title, year: data.Year, runtime:data.Runtime, metascore: data.Metascore, imdb: data.imdbRating, director: data.Director}
+        console.log("Full movie object: ");
         console.log(data);
+        console.log("JSON tailored to our table")
         console.log(movieJSON);
+        //Search was unsuccessful
         if (data.Response === "False") {
           alert('Sorry, that film is not listed in OMDB. Check your spelling or search for another film!');
         } else {
@@ -73,7 +76,6 @@ class App extends Component {
     var deleted= rows.splice(location, 1);
     console.log("DELETED ROW WITH: ")
     console.log(deleted)
-    rowCount-=1;
     this.setState({rows})
   }
 
@@ -108,8 +110,8 @@ class App extends Component {
               </tr>
             </thead>
             <tbody>
-              {this.state.rows.map(row=> (
-                <tr key={row.id} id = {row.id}>
+              {this.state.rows.map((row, key)=> (
+                <tr key={key} id = {key}>
                   <td>{row.title}</td>
                   <td>{row.year}</td>
                   <td>{row.director}</td>
@@ -126,7 +128,6 @@ class App extends Component {
             </tbody>
           </Table>
         </div>
-      
       </div>
     );
   }
